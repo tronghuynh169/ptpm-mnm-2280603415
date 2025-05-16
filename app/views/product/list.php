@@ -16,7 +16,7 @@
             <p>Giá: <?php echo htmlspecialchars($product->getPrice(), ENT_QUOTES, 'UTF-8'); ?></p>
             <a href="/huynhkimtrong/Product/edit/<?php echo $product->getID(); ?>">Sửa</a>
             <a href="/huynhkimtrong/Product/delete/<?php echo $product->getID(); ?>" 
-            onclick="return comfirm('Bạn có chắc muốn xoá sản phảm này?')">
+            onclick="return confirm('Bạn có chắc muốn xoá sản phảm này?')">
                 Xoá
             </a>
         </li>
