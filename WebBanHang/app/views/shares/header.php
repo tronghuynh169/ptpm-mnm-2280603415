@@ -62,6 +62,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/ptpm-mnm-2280603415/WebBanHang/Category/list">Quản lý danh mục</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ptpm-mnm-2280603415/WebBanHang/Product/cart">Xem giỏ hàng</a>
+                    </li>
                 </ul>
             </div>
         </div>
