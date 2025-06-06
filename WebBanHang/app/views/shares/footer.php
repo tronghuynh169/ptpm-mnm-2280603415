@@ -3,7 +3,7 @@
         <style>
             footer {
                 background-color: #1a1a1a;
-                border-top: 3px solid #00c4b4;
+                border-top: 3px solid #fff;
                 border-radius: 15px 15px 0 0;
             }
 

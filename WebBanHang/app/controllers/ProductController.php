@@ -6,11 +6,17 @@ require_once('app/models/CategoryModel.php');
 class ProductController
 {
     private $productModel;
+    private $categoryModel;
     private $db;
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
+        $this->categoryModel = new CategoryModel($this->db);
+    }
+    // Kiểm tra quyền Admin
+    private function isAdmin() {
+        return SessionHelper::isAdmin();
     }
     public function index()
     {
@@ -28,11 +34,19 @@ class ProductController
     }
     public function add()
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         $categories = (new CategoryModel($this->db))->getCategories();
         include_once 'app/views/product/add.php';
     }
     public function save()
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = $_POST['name'] ?? '';
             $description = $_POST['description'] ?? '';
@@ -61,6 +75,10 @@ class ProductController
     }
     public function edit($id)
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         $product = $this->productModel->getProductById($id);
         $categories = (new CategoryModel($this->db))->getCategories();
         if ($product) {
@@ -71,6 +89,10 @@ class ProductController
     }
     public function update()
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $name = $_POST['name'];
@@ -99,6 +121,10 @@ class ProductController
     }
     public function delete($id)
     {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($this->productModel->deleteProduct($id)) {
             header('Location: /ptpm-mnm-2280603415/WebBanHang/Product');
         } else {
@@ -225,5 +251,32 @@ class ProductController
         header('Location:/ptpm-mnm-2280603415/WebBanHang/Product/cart');
         exit;
     }
+
+    // Tăng số lượng sản phẩm trong cart
+    public function increaseQuantity($id)
+    {
+        if (isset($_SESSION['cart'][$id])) {
+            $_SESSION['cart'][$id]['quantity']++;
+        }
+        // Sau khi tăng, quay lại trang cart
+        header('Location: /ptpm-mnm-2280603415/WebBanHang/Product/cart');
+        exit;
+    }
+
+    // Giảm số lượng sản phẩm trong cart
+    public function decreaseQuantity($id)
+    {
+        if (isset($_SESSION['cart'][$id])) {
+            // Nếu quantity > 1, giảm, còn không thì xóa khỏi cart
+            if ($_SESSION['cart'][$id]['quantity'] > 1) {
+                $_SESSION['cart'][$id]['quantity']--;
+            } else {
+                unset($_SESSION['cart'][$id]);
+            }
+        }
+        header('Location: /ptpm-mnm-2280603415/WebBanHang/Product/cart');
+        exit;
+    }
+
 }
 ?>
