@@ -4,53 +4,43 @@
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <!-- Sử dụng card với hiệu ứng kính mờ -->
-                <div class="card card-glass text-white">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
                     <div class="card-body p-5 text-center">
+                        <form id="login-form">
+                            <div class="mb-md-5 mt-md-4 pb-5">
+                                <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                <p class="text-white-50 mb-5">Please enter your login and password!</p>
 
-                        <form action="/ptpm-mnm-2280603415/WebBanHang/account/checklogin" method="post">
-                            
-                            <h2 class="fw-bold mb-3 text-uppercase text-dark">Đăng Nhập</h2>
-                            <p class=" mb-4 text-dark">Chào mừng bạn quay trở lại!</p>
+                                <div class="form-outline form-white mb-4">
+                                    <input type="text" name="username" class="form-control form-control-lg" />
+                                    <label class="form-label" for="typeEmailX">UserName</label>
+                                </div>
 
-                            <!-- Cải tiến: Label được đặt trước input, có icon và placeholder -->
-                            <!-- Username -->
-                            <div class="form-group text-start mb-4">
-                                <label class="form-label fw-bold" for="username">Tài Khoản</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-dark text-white border-0"><i class="fas fa-user"></i></span>
-                                    <input type="text" id="username" name="username" class="form-control form-control-lg form-control-dark" placeholder="Nhập tài khoản của bạn" required />
+                                <div class="form-outline form-white mb-4">
+                                    <input type="password" name="password" class="form-control form-control-lg" />
+                                    <label class="form-label" for="typePasswordX">Password</label>
+                                </div>
+
+                                <p class="small mb-5 pb-lg-2">
+                                    <a class="text-white-50" href="#!">Forgot password?</a>
+                                </p>
+
+                                <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+
+                                <div class="d-flex justify-content-center text-center mt-4 pt-1">
+                                    <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
+                                    <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
+                                    <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
                                 </div>
                             </div>
 
-                            <!-- Password -->
-                            <div class="form-group text-start mb-3">
-                                <label class="form-label fw-bold" for="password">Mật Khẩu</label>
-                                 <div class="input-group">
-                                    <span class="input-group-text bg-dark text-white border-0"><i class="fas fa-lock"></i></span>
-                                    <input type="password" id="password" name="password" class="form-control form-control-lg form-control-dark" placeholder="Nhập mật khẩu" required />
-                                </div>
-                            </div>
-
-                            <div class="text-end mb-4">
-                                <a class="small text-white-50" href="#!">Quên mật khẩu?</a>
-                            </div>
-
-                            <!-- Nút đăng nhập nổi bật hơn -->
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-dark btn-lg fw-bold text-uppercase" type="submit">Đăng Nhập</button>
-                            </div>
-                            
-                            <hr class="my-4 light-hr">
-
-
-                            <div class="mt-5">
-                                <p class="mb-0 text-dark">Chưa có tài khoản? 
-                                    <a href="/ptpm-mnm-2280603415/WebBanHang/account/register" class="text-dark fw-bold">Đăng ký ngay</a>
+                            <div>
+                                <p class="mb-0">
+                                    Don't have an account?
+                                    <a href="/ptpm-mnm-2280603415/WebBanHang/account/register" class="text-white-50 fw-bold">Sign Up</a>
                                 </p>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -59,3 +49,37 @@
 </section>
 
 <?php include 'app/views/shares/footer.php'; ?>
+
+<script>
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        const jsonData = {};
+
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+
+        fetch('/ptpm-mnm-2280603415/WebBanHang/account/checkLogin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                localStorage.setItem('jwtToken', data.token);
+                location.href = '/ptpm-mnm-2280603415/WebBanHang/Product';
+            } else {
+                alert('Đăng nhập thất bại');
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi khi gọi API:', error);
+            alert('Có lỗi xảy ra khi đăng nhập!');
+        });
+    });
+</script>
